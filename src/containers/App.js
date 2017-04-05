@@ -50,36 +50,22 @@ const mapStateToProps = (state) => {
     const { data, search, column } = state;
 
     // Column sort
-    if(column[table]) {
-        const sortKey = Object.keys(column[table]);
-        const sortDir = Object.values(column[table]);        
-        data.data.sort((a, b) => {
-            const sortA = a[sortKey];
-            const sortB = b[sortKey];
-
-            // Sort numbers, otherwise strings
-            if (_.isNumber(sortA) || _.isNumber(sortB)) {
-                return sortDir == 'ASC' ? sortA - sortB : sortB - sortA;
-            }
-
-            const compareA = (sortA || '').toUpperCase();
-            const compareB = (sortB || '').toUpperCase();
-
-            if (compareA < compareB) {
-                return sortDir == 'ASC' ? -1 : 1;
-            }
-            if (compareA > compareB) {                
-                return sortDir == 'ASC' ? 1 : -1;
-            }
-            return 0;
-        });
+    const sortedData = (data) => {
+        if(column[table]) {
+            const sortKey = Object.keys(column[table]).toString();
+            const sortDir = Object.values(column[table]).toString().toLowerCase();
+            return _.orderBy(data, [sortKey.toString()],[sortDir.toString().toLowerCase()]);
+        } else {
+            return data;
+        }
     }
-
+    
     // Search filter
     const searchKey = search[table];
     const omittedKeys = column.omit;
 
     const filteredData = (data) => {
+        data = sortedData(data);
         if(searchKey) {
             let searchFilteredList = [];
             for(var index = 0; index < data.length; index++) {
