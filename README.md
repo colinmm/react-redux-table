@@ -1,4 +1,4 @@
-react-table-utils
+redux-table-utils
 ===
 - search filter
 - column sort
